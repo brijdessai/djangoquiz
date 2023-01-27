@@ -1,0 +1,60 @@
+{% extends 'navbar.html' %}
+{% block title %}Expert Challenge | {% endblock title %}
+{% block body %}
+<div class="container">
+    <div id="timer"></div>
+
+    <form id="expertise" method="post" action="">
+    {% csrf_token %}
+    {%for j in questions_list_expert%}
+    <label hidden for="question_expert{{forloop.counter}}" >answer: </label>
+    <input type="text" hidden name="question_expert{{forloop.counter}}" value="{{j.ans}}" style="border:0px;" >
+        <h4>{{j.question}}</h4>
+    {%if j.desc%}
+        <img src="{{j.desc.url}}">
+    {%endif%}
+    <br>
+    <input type="radio" value="{{j.op1}}" name="answer_expert{{forloop.counter}}">
+    <label for="answer_expert{{forloop.counter}}">{{j.op1}}</label>
+    <br>
+    <input type="radio" value="{{j.op2}}" name="answer_expert{{forloop.counter}}">
+    <label for="answer_expert{{forloop.counter}}">{{j.op2}}</label>
+    <br>
+    <input type="radio" value="{{j.op3}}" name="answer_expert{{forloop.counter}}">
+    <label for="answer_expert{{forloop.counter}}">{{j.op3}}</label>
+    <br>
+    <input type="radio" value="{{j.op4}}" name="answer_expert{{forloop.counter}}">
+    <label for="answer_expert{{forloop.counter}}">{{j.op4}}</label>
+    <br>
+    <label>marks: {{j.marks}}</label>
+    <hr>
+    {%endfor%}
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="reset" class="btn btn-danger mx-4">Reset</button>
+    </form>
+    <script>
+        var remainingTime = 10; // 60 seconds
+        var timerInterval = setInterval(function() {
+            remainingTime--;
+            document.getElementById("timer").innerHTML = remainingTime + " seconds remaining.";
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("timer").innerHTML = "Time's up!";
+                var quizForm = document.getElementById("expertise");
+                quizForm.querySelectorAll("input[type=radio]").forEach(function(input) {
+                    input.disabled = true;
+                });
+                quizForm.querySelector("button[type=submit]").innerHTML = "Time's up, form is now disabled";
+            }
+        }, 1000);
+        window.onbeforeunload = function() {
+        return "Are you sure you want to leave this page?";
+        }
+        function enableBeforeUnload() {
+            window.onbeforeunload = function() {
+                return "Are you sure you want to leave this page?";
+            }
+        }
+    </script>
+</div>
+{% endblock body %}
